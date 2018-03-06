@@ -1,3 +1,5 @@
+from state import *
+
 def astar_search(self, print_out = True):
 	h = StateHeap("A*")
 	state = self.start
