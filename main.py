@@ -1,31 +1,28 @@
 from state import *
+from heap import *
+from environment import Environment
 
-def astar_search(self, print_out = True):
-	h = StateHeap("A*")
-	state = self.start
+
+def astar_search():
+	h = StateHeap()
+	env = Environment()
 	nodes = 0
-	maze = self.env.getMaze()
-	loc = state.visited[-1]
-	maze[loc[0]][loc[1]] = len(state.visited)
+	# Sets up the first set of initial positions
+	state = StateNode()
 	while not state.complete():
-		moves = state.get_transitions()
-		nodes += 1
-		loc = state.visited[-1]
-		for m in moves:
-			loc = m.visited[-1]
-			row = loc[0]
-			col = loc[1]
-			if maze[loc[0]][loc[1]] == 0 or maze[loc[0]][loc[1]] > len(m.visited):
-				maze[loc[0]][loc[1]] = len(m.visited)
+		if env.visited(state.progress) == False:
+			env.visit(state.progress)
+			moves = state.get_transitions()
+			nodes += 1
+			for m in moves:
 				h.heappush(m)
 		if len(h.heap) == 0 :
-			print("A* Failure")
+			print("A* Failure at "+str(nodes)+" nodes expanded")
 			return
-		state = h.heappop()			
-	if print_out:
-		state.print_sol(self.folder+"/11a*.txt")
-		print("astar expanded "+str(nodes)+" nodes. "+str(len(state.visited)))
-	return state.visited
+		state = h.heappop()
+	print(str(nodes)+" expanded to find solution")			
+	return state.get_path()
 
 
-
+if __name__ == "__main__":
+	print(astar_search())

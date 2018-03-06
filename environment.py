@@ -16,7 +16,7 @@ class EnvNode():
 		if layer == 0:
 			self.val = False
 		else:
-			for i in range(5):
+			for i in range(6):
 				temp = EnvNode()
 				temp.build_layers(layer-1)
 				self.add_child(temp)
