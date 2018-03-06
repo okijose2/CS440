@@ -30,21 +30,22 @@ class Environment():
 		self.head = EnvNode()
 		self.head.build_layers(5)
 
+
 	'''
 	Marks a position as visited
 	'''
-	def visit(self, positions):
+	def visit(self, state):
 		node = self.head
-		for i in positions:
+		for i in state.positions:
 			node = node.children[i]
 		node.val = True
 
 	'''
 	Determines if a location has been visited
 	'''
-	def visited(self, positions):
+	def visited(self, state):
 		node = self.head
-		for i in positions:
+		for i in state.positions:
 			node = node.children[i]
 		return node.val
 

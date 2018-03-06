@@ -1,0 +1,12 @@
+sol.txt
+
+Solution: BAEDCADBCDE
+Cost: 11
+
+1613 nodes expanded to find solution
+Solution: DBAEDCBACED
+Cost: 11
+
+6175 expanded to find solution
+Solution: BEDAEDCBCAED
+Cost: 7043
