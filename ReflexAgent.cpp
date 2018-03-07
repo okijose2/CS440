@@ -17,6 +17,5 @@ tuple<Board, int[], int> makeMove(tuple<Board, int[], int> state)
 	else{
 
 	}
-
 	
 }
