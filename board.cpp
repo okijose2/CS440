@@ -6,6 +6,10 @@
 
 using std;
 
+Board(){
+	
+}
+
 /**
   * Converts player value to proper char
   */

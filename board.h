@@ -18,6 +18,8 @@ class Board
 {
 
 	public:
+		Board();
+		void getChar();
 		void initGame();
 		int** boardState(); 
 		void printBoard();

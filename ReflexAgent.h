@@ -8,7 +8,7 @@ class ReflexAgent
 {
 
 	public:
-		int ReflexAgent(boardState, currPlayer);
+		ReflexAgent(boardState, currPlayer);
 		tuple <int[][], int> makeMove();
 
 	private:
