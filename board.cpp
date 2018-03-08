@@ -6,28 +6,45 @@
 
 using std;
 
-void initGame(int boardSize, int currPlayer)
-{
+/**
+  * Converts player value to proper char
+  */
+void getChar(int val){
+	if(val == RED_CHIP){
+		return 'R';
+	} else if (val == BLUE_CHIP) {
+		return 'B';
+	}
+	return ' ';
+}
 
-	//define if board position has no stone, player1, or player2 in it
-	int noStone = 0;
-	int player1 = 1;  //red stone
-	int player2 = 2;  //blue stone
-
-	int boardVals[boardSize * boardSize];
-	for(int i=0; i<boardSize; i++){
-		for(int j=0; j<boardSize; j++){
-			boardVals[boardSize*i + j] = 0;
+/**
+  * My init method using the class variable
+  */
+void initGame() {
+	for(int i=0; i<BOARD_SIZE; i++){
+		for(int j=0; j<BOARD_SIZE; j++){
+			state[i][j] = UNPLAYED;
 		}
 	}
 
-	currPlayer = player1;
+	currPlayer = PLAYER_1;
 }
 
 
-tuple<Board, boardVals, currPlayer> boardState(Board board, int[] boardVals, int currPlayer)
+int** boardState()
 {
-	state = make_tuple(board, boardVals, currPlayer);
 	return state;
 }
 
+/**
+  * Prints the state of the board to the terminal 
+  */
+void printBoard(){
+	for (i = 0; i < BOARD_SIZE; i++){
+		for (j = 0; j < BOARD_SIZE; j++){
+			printf("%s", getChar(board[i][j]));
+		}
+		printf("\n");
+	}
+}
