@@ -7,7 +7,7 @@
 using std;
 
 Board(){
-	
+
 }
 
 /**
@@ -33,6 +33,10 @@ void initGame() {
 	}
 
 	currPlayer = PLAYER_1;
+}
+
+void playPiece(int currPlayer, int x, int y){
+	state[y][x] = currPlayer;
 }
 
 

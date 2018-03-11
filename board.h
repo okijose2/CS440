@@ -23,10 +23,10 @@ class Board
 		void initGame();
 		int** boardState(); 
 		void printBoard();
+		void playPiece(int currPlayer, int x, int y);
 
 
 	private:
-		uint8_t currPlayer;
 		uint8_t state[BOARD_SIZE][BOARD_SIZE]; // class var added by Luke
 
 }
