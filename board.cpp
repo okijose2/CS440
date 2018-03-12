@@ -16,7 +16,9 @@ using namespace std;
 
 
 Board::Board(){
-
+	initGame();
+	this->p1_progress = PLAYER_1;
+	this->p2_progress = PLAYER_2;
 }
 
 /**
@@ -86,6 +88,16 @@ bool Board::unoccupied(int row, int col)
 		return true;
 	} else {
 		return false;
+	}
+}
+
+void Board::playPiece(int row, int col, char player){
+	if(player == PLAYER_1){
+		this->state[row][col] = p1_progress;
+		p1_progress++;
+	} else {
+		this->state[row][col] = p2_progress;
+		p2_progress++;
 	}
 }
 

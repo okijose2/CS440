@@ -32,10 +32,13 @@ class Board
 		char currPlayer;
 		void setPlayer(char player);
 		bool unoccupied(int row, int col); // returns if a location is occupied
+		void play_piece(int row, int col, char player);
 
 
 	private:
 		char state[BOARD_SIZE][BOARD_SIZE]; // class var added by Luke
+		char p1_progress;
+		char p2_progress;
 
 
 };

@@ -12,7 +12,6 @@ public:
 	StateNode(bool isMax_in, Board* state_in, int row_in, int col_in);
 	~StateNode();
 
-private:
 	Board* state;
 	int row;
 	int col;
