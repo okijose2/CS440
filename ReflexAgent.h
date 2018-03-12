@@ -1,34 +1,42 @@
+#ifndef REFLEXAGENT_H
+#define REFLEXAGENT_H
+
 #include "board.h"
 #include <vector>
 #include <iostream>
 #include <tuple>
 
-using std;
+using namespace std;
 
-#define PLAYER_1 1
-#define PLAYER_2 2
+#define PLAYER_1 'a'
+#define PLAYER_2 'A'
 
 #define BOARD_SIZE 7
 
-#define UNPLAYED 0
-#define RED_CHIP 1
-#define BLUE_CHIP 2
+#define UNPLAYED '.'
+#define RED_CHIP 'R'
+#define BLUE_CHIP 'B'
 
 class ReflexAgent
 {
 
 	public:
-		void ReflexAgent(boardState, currPlayer);
-		bool winningMove();
-		bool oppFourInRow();
-		bool oppThreeInRow();
-		makeMove(board, int row, int col);
-		vector<int> findWinningBlock();
-
+		ReflexAgent(char player, char chip);
+		bool winningMove(Board* board);
+		bool oppFourInRow(Board* board);
+		bool oppThreeInRow(Board* board);
+		bool playGame(Board* board); //true if make
+		//vector<int> findWinningBlock(Board* board);
+		char getPlayer();
 
 
 	private:
-		bool wonGame;
-		int searchBoard(board, startRow, startCol, endRow, endCol, currPlayer);
-		vector<int> findSequence();
-}
+		//bool wonGame;
+		int searchBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player);
+		//vector<int> findSequence();
+		char chip_;
+		int player_;
+};
+
+
+#endif

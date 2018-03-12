@@ -1,58 +1,79 @@
 #include "board.h"
 #include <vector>
 #include <iostream>
-#include <priority_queue>
-#include <tuple>
 
-using std;
+using namespace std;
 
-Board(){
+
+#define PLAYER_1 'a'
+#define PLAYER_2 'A'
+
+#define BOARD_SIZE 7
+
+#define UNPLAYED '.'
+#define RED_CHIP 'R'
+#define BLUE_CHIP 'B'
+
+
+Board::Board(){
 
 }
 
 /**
   * Converts player value to proper char
   */
-void getChar(int val){
+char Board::getChar(char val){
+	return val++;
+	/*
 	if(val == RED_CHIP){
 		return 'R';
 	} else if (val == BLUE_CHIP) {
 		return 'B';
 	}
 	return ' ';
+	*/
+}
+
+void Board::updateState(int row, int col, char update)
+{
+	this->state[row][col] = update;
 }
 
 /**
   * My init method using the class variable
   */
-void initGame() {
+void Board::initGame() {
 	for(int i=0; i<BOARD_SIZE; i++){
 		for(int j=0; j<BOARD_SIZE; j++){
-			state[i][j] = UNPLAYED;
+			this->state[i][j] = UNPLAYED;
 		}
 	}
 
-	currPlayer = PLAYER_1;
+	this->currPlayer = PLAYER_1;
 }
 
-void playPiece(int currPlayer, int x, int y){
-	state[y][x] = currPlayer;
+void Board::setPlayer(char player){
+	this->currPlayer = player;
 }
 
-
-int** boardState()
+int Board::boardState(int row, int col)
 {
-	return state;
+	int state_ = this->state[row][col];
+	return state_;
 }
 
 /**
   * Prints the state of the board to the terminal 
   */
-void printBoard(){
-	for (i = 0; i < BOARD_SIZE; i++){
-		for (j = 0; j < BOARD_SIZE; j++){
-			printf("%s", getChar(board[i][j]));
+void Board::printBoard()
+{
+	printf("\n");
+	for (int i = 0; i < BOARD_SIZE; i++){
+		for (int j = 0; j < BOARD_SIZE; j++){
+			printf("%c", this->state[i][j]);
 		}
 		printf("\n");
 	}
+	
 }
+

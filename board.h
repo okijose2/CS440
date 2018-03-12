@@ -1,32 +1,42 @@
+#ifndef BOARD_H
+#define BOARD_H
+
 #include <vector>
 #include <iostream>
 #include <tuple>
+//#include "ReflexAgent.h"
 
-using std;
+using namespace std;
 
 // Defined constants
-#define PLAYER_1 1
-#define PLAYER_2 2
+#define PLAYER_1 'a'
+#define PLAYER_2 'A'
 
 #define BOARD_SIZE 7
 
-#define UNPLAYED 0
-#define RED_CHIP 1
-#define BLUE_CHIP 2
+#define UNPLAYED '.'
+#define RED_CHIP 'R'
+#define BLUE_CHIP 'B'
 
 class Board
 {
 
 	public:
 		Board();
-		void getChar();
+		char getChar(char val);
 		void initGame();
-		int** boardState(); 
+		int boardState(int row, int col); //return val at coord x,y
 		void printBoard();
-		void playPiece(int currPlayer, int x, int y);
+		uint8_t getCurrPlayer(); //return current player
+		void updateState(int row, int col, char update); //update char on board a->b->c
+		char currPlayer;
+		void setPlayer(char player);
 
 
 	private:
-		uint8_t state[BOARD_SIZE][BOARD_SIZE]; // class var added by Luke
+		char state[BOARD_SIZE][BOARD_SIZE]; // class var added by Luke
 
-}
+
+};
+
+#endif
