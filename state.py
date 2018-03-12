@@ -1,8 +1,8 @@
-DIST_MAT = [[0, 1064, 673, 1401, 277],
-		[1064, 0, 958, 1934, 337],
-		[673, 958, 0, 1001, 399],
-		[1401, 1934, 1001, 0, 387],
-		[277, 337, 399, 387, 0]]
+DIST_MAT = [[10000, 1064, 673, 1401, 277],
+		[1064, 10000, 958, 1934, 337],
+		[673, 958, 10000, 1001, 399],
+		[1401, 1934, 1001, 10000, 387],
+		[277, 337, 399, 387, 10000]]
 
 MIN_DIST = 277
 
@@ -22,7 +22,7 @@ Most importantly the progress on each of the 5 widgets,
 and the current location
 '''
 class StateNode():
-	def __init__(self, env = None):
+	def __init__(self):
 		self.progress = [0,0,0,0,0]
 		self.loc = None
 		self.cost = 0
@@ -38,7 +38,6 @@ class StateNode():
 		self.loc = targ.loc
 		self.cost = targ.cost
 		self.heur = targ.heur
-		self.env = targ.env
 		self.parent = targ
 
 

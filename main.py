@@ -12,7 +12,8 @@ def astar_search():
 	while not state.complete():
 		#if env.visited(state) == False:
 		#env.visit(state)
-		#print("Total: "+str(state.heuristic())+", "+str(state.heuristic()-state.cost)+", "+str(state.cost))
+		if nodes%10 == 0:
+			print("Total: "+str(state.heuristic())+", "+str(state.heuristic()-state.cost)+", "+str(state.cost))
 		moves = state.get_transitions()
 		nodes += 1
 		for m in moves:

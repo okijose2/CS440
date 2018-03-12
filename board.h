@@ -31,6 +31,7 @@ class Board
 		void updateState(int row, int col, char update); //update char on board a->b->c
 		char currPlayer;
 		void setPlayer(char player);
+		bool unoccupied(int row, int col); // returns if a location is occupied
 
 
 	private:

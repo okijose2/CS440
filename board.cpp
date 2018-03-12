@@ -77,3 +77,15 @@ void Board::printBoard()
 	
 }
 
+/**
+  * returns if a location is occupied
+  */
+bool Board::unoccupied(int row, int col)
+{
+	if(this->state[row][col] == '.'){
+		return true;
+	} else {
+		return false;
+	}
+}
+
