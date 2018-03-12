@@ -2,6 +2,7 @@
 #include "board.h"
 #include <iostream>
 #include <tuple>
+#include <vector>
 
 using namespace std;
 
@@ -15,9 +16,9 @@ using namespace std;
 #define BLUE_CHIP 'B'
 
 
-ReflexAgent::ReflexAgent(char player, char chip){
+ReflexAgent::ReflexAgent(char player, char opponent){
 	player_ = player;
-	chip_ = chip;
+	opponent_ = opponent;
 }
 
 
@@ -28,48 +29,76 @@ bool ReflexAgent::winningMove(Board* board)
 		for(int j=0; j<BOARD_SIZE; j++){
 			if(searchBoard(board, i, j, i+3, j, this->player_) == 4){ //winning horizontal move
 				canWin = true;
-				if(i-1 > 0){
-					board->updateState(i-1, j, board->getChar(this->player_));
+				if(i-1 > 0 && board->unoccupied(i-1, j)){
+					board->play_piece(i-1, j, this->player_);
 				}
-				else if(i+4 < BOARD_SIZE-1){
-					board->updateState(i+4, j, board->getChar(this->player_));
+				else if(i+4 < BOARD_SIZE-1 && board->unoccupied(i+4, j)){
+					board->play_piece(i+4, j, this->player_);
 				}
 			}
 			if(searchBoard(board, i, j, i-3, j, this->player_) == 4){ //winning negative horizonatal move
 				canWin = true;
-				if(i-4 > 0){
-					board->updateState(i-1, j, board->getChar(this->player_));
+				if(i-4 > 0 && board->unoccupied(i-4, j)){
+					board->play_piece(i-4, j, this->player_);
 				}
-				else if(i+1 < BOARD_SIZE){
-					board->updateState(i+4, j, board->getChar(this->player_));
+				else if(i+1 < BOARD_SIZE && board->unoccupied(i+1, j)){
+					board->play_piece(i+1, j, this->player_);
 				}
 			}
 			if(searchBoard(board, i, j, i, j+3, this->player_) == 4){ //winning vertical move
 				canWin = true;
-				if(j-1 > 0){
-					board->updateState(i, j-1, board->getChar(this->player_));
+				if(j-1 > 0 && board->unoccupied(i, j-1)){
+					board->play_piece(i, j-1, this->player_);
 				}
-				else if(j+4 < BOARD_SIZE){
-					board->updateState(i, j+4, board->getChar(this->player_));
+				else if(j+4 < BOARD_SIZE && board->unoccupied(i, j+4)){
+					board->play_piece(i, j+4, this->player_);
 				}
 			}
 			if(searchBoard(board, i, j, i, j-3, this->player_) == 4){ //winning negative vertical move
 				canWin = true;
-				if(j-4 > 0){
-					board->updateState(i, j-4, board->getChar(this->player_));
+				if(j-4 > 0 && board->unoccupied(i, j-4)){
+					board->play_piece(i, j-4, this->player_);
 				}
-				else if(j+1 < BOARD_SIZE){
-					board->updateState(i, j+1, board->getChar(this->player_));
+				else if(j+1 < BOARD_SIZE && board->unoccupied(i, j+1)){
+					board->play_piece(i, j+1, this->player_);
 				}
 			}
-			/*
-			if(searchBoard(board, i, j, i+3, j+3) == 4){ //winning negative horizonatal move
+			if(searchBoardDiag(board, i, j, i+3, j+3, this->player_) == 4){ //winning negative horizonatal move
 				canWin = true;
+				if(j+4 > 0 && i+4 > 0 && board->unoccupied(i+4, j+4)){
+					board->play_piece(i+4, j+4, this->player_);
+				}
+				else if(j-1 < BOARD_SIZE && i-1<BOARD_SIZE && board->unoccupied(i-1, j-1)){
+					board->play_piece(i-1, j-1, this->player_);
+				}
 			}
-			if(searchBoard(board, i, j, i-3, j-3) == 4){ //winning negative horizonatal move
+			if(searchBoardDiag(board, i, j, i-3, j-3, this->player_) == 4){ //winning negative horizonatal move
 				canWin = true;
+				if(j+1 > 0 && i+1 > 0 && board->unoccupied(i+1, j+1)){
+					board->play_piece(i+1, j+1, this->player_);
+				}
+				else if(j-4 < BOARD_SIZE && i-4<BOARD_SIZE && board->unoccupied(i-4, j-4)){
+					board->play_piece(i-4, j-4, this->player_);
+				}
 			}
-			*/
+			if(searchBoardDiag(board, i, j, i+3, j-3, this->player_) == 4){ //winning negative horizonatal move
+				canWin = true;
+				if(j+1 > 0 && i+1 > 0 && board->unoccupied(i+1, j+1)){
+					board->play_piece(i+1, j-1, this->player_);
+				}
+				else if(j-4 < BOARD_SIZE && i-4<BOARD_SIZE && board->unoccupied(i-4, j-4)){
+					board->play_piece(i-4, j+4, this->player_);
+				}
+			}
+			if(searchBoardDiag(board, i, j, i-3, j+3, this->player_) == 4){ //winning negative horizonatal move
+				canWin = true;
+				if(j+1 > 0 && i+1 > 0 && board->unoccupied(i+1, j+1)){
+					board->play_piece(i-1, j+1, this->player_);
+				}
+				else if(j-4 < BOARD_SIZE && i-4<BOARD_SIZE && board->unoccupied(i-4, j-4)){
+					board->play_piece(i+4, j-4, this->player_);
+				}
+			}
 		}
 	}
 	return canWin;
@@ -78,34 +107,82 @@ bool ReflexAgent::winningMove(Board* board)
 
 bool ReflexAgent::oppFourInRow(Board* board)
 {
-	char opp = this->player_;
-	if(isupper(opp)){ tolower(opp); }
-	else if(islower(opp)){ toupper(opp); }
 
 	bool oppCanWin = false;
-
 	for(int i=0; i<BOARD_SIZE; i++){
 		for(int j=0; j<BOARD_SIZE; j++){
-			if(searchBoard(board, i, j, i+3, j, opp) == 4){ //winning rightward move
+			if(searchBoard(board, i, j, i+3, j, this->opponent_) == 4){ //winning horizontal move
 				oppCanWin = true;
+				if(i-1 > 0 && board->unoccupied(i-1, j)){
+					board->play_piece(i-1, j, this->opponent_);
+				}
+				else if(i+4 < BOARD_SIZE-1 && board->unoccupied(i+4, j)){
+					board->play_piece(i+4, j, this->opponent_);
+				}
 			}
-			if(searchBoard(board, i, j, i-3, j, opp) == 4){ //winning leftward move
+			if(searchBoard(board, i, j, i-3, j, this->opponent_) == 4){ //winning negative horizonatal move
 				oppCanWin = true;
+				if(i-4 > 0 && board->unoccupied(i-4, j)){
+					board->play_piece(i-4, j, this->opponent_);
+				}
+				else if(i+1 < BOARD_SIZE && board->unoccupied(i+1, j)){
+					board->play_piece(i+1, j, this->opponent_);
+				}
 			}
-			if(searchBoard(board, i, j, i, j+3, opp) == 4){ //winning upward move
+			if(searchBoard(board, i, j, i, j+3, this->opponent_) == 4){ //winning vertical move
 				oppCanWin = true;
+				if(j-1 > 0 && board->unoccupied(i, j-1)){
+					board->play_piece(i, j-1, this->opponent_);
+				}
+				else if(j+4 < BOARD_SIZE && board->unoccupied(i, j+4)){
+					board->play_piece(i, j+4, this->opponent_);
+				}
 			}
-			if(searchBoard(board, i, j, i, j-3, opp) == 4){ //winning downward move
+			if(searchBoard(board, i, j, i, j-3, this->opponent_) == 4){ //winning negative vertical move
 				oppCanWin = true;
+				if(j-4 > 0 && board->unoccupied(i, j-4)){
+					board->play_piece(i, j-4, this->opponent_);
+				}
+				else if(j+1 < BOARD_SIZE && board->unoccupied(i, j+1)){
+					board->play_piece(i, j+1, this->opponent_);
+				}
 			}
-			/*
-			if(searchBoard(board, i, j, i+3, j+3) == 4){ //winning negative horizonatal move
+			if(searchBoardDiag(board, i, j, i+3, j+3, this->opponent_) == 4){ //winning negative horizonatal move
 				oppCanWin = true;
+				if(j+4 > 0 && i+4 > 0 && board->unoccupied(i+4, j+4)){
+					board->play_piece(i+4, j+4, this->opponent_);
+				}
+				else if(j-1 < BOARD_SIZE && i-1<BOARD_SIZE && board->unoccupied(i-1, j-1)){
+					board->play_piece(i-1, j-1, this->opponent_);
+				}
 			}
-			if(searchBoard(board, i, j, i-3, j-3) == 4){ //winning negative horizonatal move
+			if(searchBoardDiag(board, i, j, i-3, j-3, this->opponent_) == 4){ //winning negative horizonatal move
 				oppCanWin = true;
+				if(j+1 > 0 && i+1 > 0 && board->unoccupied(i+1, j+1)){
+					board->play_piece(i+1, j+1, this->opponent_);
+				}
+				else if(j-4 < BOARD_SIZE && i-4<BOARD_SIZE && board->unoccupied(i-4, j-4)){
+					board->play_piece(i-4, j-4, this->opponent_);
+				}
 			}
-			*/
+			if(searchBoardDiag(board, i, j, i+3, j-3, this->opponent_) == 4){ //winning negative horizonatal move
+				oppCanWin = true;
+				if(j+1 > 0 && i+1 > 0 && board->unoccupied(i+1, j+1)){
+					board->play_piece(i+1, j-1, this->opponent_);
+				}
+				else if(j-4 < BOARD_SIZE && i-4<BOARD_SIZE && board->unoccupied(i-4, j-4)){
+					board->play_piece(i-4, j+4, this->opponent_);
+				}
+			}
+			if(searchBoardDiag(board, i, j, i-3, j+3, this->opponent_) == 4){ //winning negative horizonatal move
+				oppCanWin = true;
+				if(j+1 > 0 && i+1 > 0 && board->unoccupied(i+1, j+1)){
+					board->play_piece(i-1, j+1, this->opponent_);
+				}
+				else if(j-4 < BOARD_SIZE && i-4<BOARD_SIZE && board->unoccupied(i-4, j-4)){
+					board->play_piece(i+4, j-4, this->opponent_);
+				}
+			}
 		}
 	}
 	return oppCanWin;
@@ -114,31 +191,82 @@ bool ReflexAgent::oppFourInRow(Board* board)
 
 bool ReflexAgent::oppThreeInRow(Board* board)
 {
-	char opp = this->player_;
-	if(isupper(opp)){ tolower(opp); }
-	else if(islower(opp)){ toupper(opp); }
 
 	bool threeInRow = false;
 
 	for(int i=0; i<BOARD_SIZE; i++){
 		for(int j=0; j<BOARD_SIZE; j++){
-			if(searchBoard(board, i, j, i+3, j, opp) == 3){ //right
+			if(searchBoard(board, i, j, i+2, j, this->opponent_) == 3){ //winning horizontal move
 				threeInRow = true;
+				if(i-1 > 0 && board->unoccupied(i-1, j)){
+					board->play_piece(i-1, j, this->opponent_);
+				}
+				else if(i+3 < BOARD_SIZE-1 && board->unoccupied(i+3, j)){
+					board->play_piece(i+3, j, this->opponent_);
+				}
 			}
-			if(searchBoard(board, i, j, i-3, j, opp) == 3){ //left
+			if(searchBoard(board, i, j, i-2, j, this->opponent_) == 3){ //winning negative horizonatal move
 				threeInRow = true;
+				if(i-3 > 0 && board->unoccupied(i-3, j)){
+					board->play_piece(i-3, j, this->opponent_);
+				}
+				else if(i+1 < BOARD_SIZE && board->unoccupied(i+1, j)){
+					board->play_piece(i+1, j, this->opponent_);
+				}
 			}
-			if(searchBoard(board, i, j, i, j+3, opp) == 3){ //up
+			if(searchBoard(board, i, j, i, j+2, this->opponent_) == 3){ //winning vertical move
 				threeInRow = true;
+				if(j-1 > 0 && board->unoccupied(i, j-1)){
+					board->play_piece(i, j-1, this->opponent_);
+				}
+				else if(j+3 < BOARD_SIZE && board->unoccupied(i, j+3)){
+					board->play_piece(i, j+3, this->opponent_);
+				}
 			}
-			if(searchBoard(board, i, j, i, j-3, opp) == 3){ //down
+			if(searchBoard(board, i, j, i, j-2, this->opponent_) == 3){ //winning negative vertical move
 				threeInRow = true;
+				if(j-3 > 0 && board->unoccupied(i, j-3)){
+					board->play_piece(i, j-3, this->opponent_);
+				}
+				else if(j+1 < BOARD_SIZE && board->unoccupied(i, j+1)){
+					board->play_piece(i, j+1, this->opponent_);
+				}
 			}
-			if(searchBoard(board, i, j, i+3, j+3, opp) == 3){ //winning negative horizonatal move
+			if(searchBoardDiag(board, i, j, i+2, j+2, this->opponent_) == 3){ //winning negative horizonatal move
 				threeInRow = true;
+				if(j+3 > 0 && i+3 > 0 && board->unoccupied(i+3, j+3)){
+					board->play_piece(i+3, j+3, this->opponent_);
+				}
+				else if(j-1 < BOARD_SIZE && i-1<BOARD_SIZE && board->unoccupied(i-1, j-1)){
+					board->play_piece(i-1, j-1, this->opponent_);
+				}
 			}
-			if(searchBoard(board, i, j, i-3, j-3, opp) == 3){ //winning negative horizonatal move
+			if(searchBoardDiag(board, i, j, i-2, j-2, this->opponent_) == 3){ //winning negative horizonatal move
 				threeInRow = true;
+				if(j+1 > 0 && i+1 > 0 && board->unoccupied(i+1, j+1)){
+					board->play_piece(i+1, j+1, this->opponent_);
+				}
+				else if(j-3 < BOARD_SIZE && i-3<BOARD_SIZE && board->unoccupied(i-3, j-3)){
+					board->play_piece(i-3, j-3, this->opponent_);
+				}
+			}
+			if(searchBoardDiag(board, i, j, i+2, j-2, this->opponent_) == 3){ //winning negative horizonatal move
+				threeInRow = true;
+				if(j+1 > 0 && i+1 > 0 && board->unoccupied(i+1, j+1)){
+					board->play_piece(i+1, j-1, this->opponent_);
+				}
+				else if(j-3 < BOARD_SIZE && i-3<BOARD_SIZE && board->unoccupied(i-3, j-3)){
+					board->play_piece(i-3, j+3, this->opponent_);
+				}
+			}
+			if(searchBoardDiag(board, i, j, i-2, j+2, this->opponent_) == 3){ //winning negative horizonatal move
+				threeInRow = true;
+				if(j+1 > 0 && i+1 > 0 && board->unoccupied(i+1, j+1)){
+					board->play_piece(i-1, j+1, this->opponent_);
+				}
+				else if(j-3 < BOARD_SIZE && i-3<BOARD_SIZE && board->unoccupied(i-3, j-3)){
+					board->play_piece(i+3, j-3, this->opponent_);
+				}
 			}
 		}
 	}
@@ -148,42 +276,103 @@ bool ReflexAgent::oppThreeInRow(Board* board)
 
 bool ReflexAgent::playGame(Board* board)
 {
-	int count=0;
 	//check if you have winning move
 	bool gameOver = false;
 	if(winningMove(board)){
+		printf("Made winning move\n");
 		gameOver = true;
 	}
 	else if(oppFourInRow(board)){
-		count++;
+		printf("Stopped opponent from winning\n");
+		gameOver = false;
 	}
 	else if(oppThreeInRow(board)){
-		count++;
+		printf("Stopped opponent three in a row\n");
+		gameOver = false;
 	}
+	
 	else{
-		//findWinningBlock(board);
+		findWinningBlock(board);
+		printf("found potential winning block\n");
+		gameOver = false;
 	}
+
 	return gameOver;
 
 }
 
-
-vector< vector<int> > findWinningBlock(Board* board)
+				//count number of your stones in that block
+				//if current block score > max block score, 
+				//winningbloack equals vecotr of start, end, 
+				//block scroe = search board in range
+				//go back and look thorugh winning block to see hwere to place the stone
+				//
+vector<int> ReflexAgent::findWinningBlock(Board* board)
 {
-	char opp = this->player_;
-	if(isupper(opp)){ tolower(opp); }
-	else if(islower(opp)){ toupper(opp); }
+	vector<int> block;
+
+	int maxScore = 0;
 
 	for(int i=0; i<BOARD_SIZE; i++){
 		for(int j=0; j<BOARD_SIZE; j++){
-			if(searchBoard(board, i, j, i+4, j, opp) == 0){
-				int starRow = i;
-				int startCol = j;
-				int endRow = i+4;
-				int endCol = j;
+			if(searchBoard(board, i, j, i+4, j, this->opponent_) == 0){
+				int curScore = searchBoard(board, i, j, i+4, j, this->player_);
+				if(curScore > maxScore){
+					maxScore = curScore;
+					int arr[] = {i,j,i+4, j};
+					vector<int> winningBlock(arr, arr+4);
+					block = winningBlock;
+				}
+			}
+			if(searchBoard(board, i, j, i-4, j, this->opponent_) == 0){
+				int curScore = searchBoard(board, i, j, i+4, j, this->player_);
+				if(curScore > maxScore){
+					maxScore = curScore;
+					int arr[] = {i, j, i-4, j};
+					vector<int> winningBlock(arr, arr+4);
+					block = winningBlock;				
+				}
+			}
+			if(searchBoard(board, i, j, i, j+4, this->opponent_) == 0){
+				int curScore = searchBoard(board, i, j, i, j+4, this->player_);
+				if(curScore > maxScore){
+					maxScore = curScore;
+					int arr[] = {i, j, i, j+4};
+					vector<int> winningBlock(arr, arr+4);
+					block = winningBlock;				
+				}
+			}
+			else if(searchBoard(board, i, j, i, j-4, this->opponent_) == 0){
+				int curScore = searchBoard(board, i, j, i, j-4, this->player_);
+				if(curScore > maxScore){
+					maxScore = curScore;
+					int arr[] = {i, j, i, j-4};
+					vector<int> winningBlock(arr, arr+4);
+					block = winningBlock;			
+				}
 			}
 		}
 	}
+	return block;
+}
+
+
+//keep track of current best winning bloack score
+
+void ReflexAgent::placeStone(Board* board, vector<int> winningBlock)
+{
+
+	int startRow = winningBlock[0]; int startCol = winningBlock[1];
+	int endRow = winningBlock[2]; int endCol = winningBlock[3];
+
+	for(int i=startRow; i<endRow; i++){
+		for(int j=startCol; j<endCol; j++){
+			if(board->unoccupied(i, j)){
+				board->play_piece(i, j, this->player_);
+			}
+		}
+	}
+
 }
 
 
@@ -193,11 +382,11 @@ char ReflexAgent::getPlayer(){
 
 int ReflexAgent::searchBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player)
 {
+	int count = 0;
 	if(endRow >= BOARD_SIZE || endCol >= BOARD_SIZE || endRow < 0 || endCol < 0){
 		return 0;
 	}
 	//if start row& endr word != diff for loop
-	int count = 0;
 	for(int i=startRow; i<=endRow; i++){
 		for(int j=startCol; j <=endCol; j++){
 			if((isupper(board->boardState(i,j)) && isupper(player)) || (islower(board->boardState(i,j)) && islower(player))){
@@ -210,46 +399,59 @@ int ReflexAgent::searchBoard(Board* board, int startRow, int startCol, int endRo
 }
 
 
-/*
-int searchBoardDiag(Board* board, int startRow, int startCol, int endRow, int endCol, int player)
+//check if abs startx-endx = abs starty-endy
+//have an offset for(offest in range)
+//length of daig is startrow-endrow
+//chech which direction to go->
+//if going to bottom right: for(i=0l i<length run;i++) => heck startrow+i, start col+i
+//check direction of run w/if else
+//if top left: startrow<end row & start col > end col
+//one outermost if statemen
+//in then: another if=> in else antoher
+//if stary<endy +. if startx < endx
+//else if startx < endx
+int ReflexAgent::searchBoardDiag(Board* board, int startRow, int startCol, int endRow, int endCol, int player)
 {
 	if(endRow >= BOARD_SIZE || endCol >= BOARD_SIZE || endRow < 0 || endCol < 0){
 		return 0;
 	}
 	int count = 0;
-	for(int i=startRow; i<=endRow; i++){
-		for(int i=startCol; i <=endCol; i++){
-			if(board.boardState(i,j) == player){
-				count +=1;
+	int diagLength = startRow - endRow;
+	if(startRow > endRow){ //east diag
+		if(startCol > endCol){ //southeast diag
+			for(int i=0; i<diagLength; i++){
+				if(isupper(board->boardState(startRow+i, startCol+i)) == isupper(player) || islower(board->boardState(startRow+i, startCol+i)) == islower(player)){
+					count += 1;
+				}
+			}
+		}
+		if(startCol < endCol){ //northeast
+			for(int i=0; i<diagLength; i++){
+				if(isupper(board->boardState(startRow-i, startCol+i)) == isupper(player) || islower(board->boardState(startRow+i, startCol+i)) == islower(player)){
+					count += 1;
+				}			
 			}
 		}
 	}
-	return count;
-}
-*/
-
-
-/*
-
-			for(int inc=0; inc<4; inc++){
-				if(board.boardState(row+inc, col) == board.currPlayer){
-					board.boardState(row-1, col) == currPlayer;
-				}	
-				if(board.boardState(row-inc, col) == board.currPlayer){
-					board.boardState(row+1, col) == currPlayer;
-				}
-				if(board.boardState(row, col+inc) == board.currPlayer){
-					board.boardState(row, col-1) == currPlayer;
-				}	
-				if(board.boardState(row, col+inc) == board.currPlayer){
-					board.boardState(row, col+1) == currPlayer;
-				}
-				if(board.boardState(row+inc, col+inc) == board.currPlayer){
-					board.boardState(row-1, col-1) == currPlayer;
-				}	
-				if(board.boardState(row-inc, col-inc) == board.currPlayer){
-					board.boardState(row+1, col+1) == currPlayer;
+	else if(startRow < endRow){ //west diag
+		if(startCol > endCol){ //southwest diag
+			for(int i=0; i<diagLength; i++){
+				if(isupper(board->boardState(startRow-i, startCol-i)) == isupper(player) || islower(board->boardState(startRow-i, startCol-i)) == islower(player)){
+					count += 1;
 				}
 			}
+		}
+		if(startCol < endCol){ //northwest
+			for(int i=0; i<diagLength; i++){
+				if(isupper(board->boardState(startRow+i, startCol-i)) == isupper(player) || islower(board->boardState(startRow+i, startCol-i)) == islower(player)){
+					count += 1;
+				}
+			}	
+		}
+	}
+	else{
+		return 0;
+	}
 
-*/
+	return count;
+}

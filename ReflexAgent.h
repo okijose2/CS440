@@ -21,21 +21,23 @@ class ReflexAgent
 {
 
 	public:
-		ReflexAgent(char player, char chip);
-		bool winningMove(Board* board);
-		bool oppFourInRow(Board* board);
-		bool oppThreeInRow(Board* board);
-		bool playGame(Board* board); //true if make
-		//vector<int> findWinningBlock(Board* board);
+		ReflexAgent(char player, char opponent);
+		bool winningMove(Board* board); //true if there is a winning move
+		bool oppFourInRow(Board* board); //true if opponent has 4 in a row, update board state internally
+		bool oppThreeInRow(Board* board); //true if opponent has three in a row, update board state internally
+		bool playGame(Board* board); //true if you wan win
+		vector<int> findWinningBlock(Board* board);
+		void placeStone(Board* board, vector<int> winningBlock);
 		char getPlayer();
 
 
 	private:
 		//bool wonGame;
-		int searchBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player);
+		int searchBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player); //searches board for chains fo the same color/player
 		//vector<int> findSequence();
-		char chip_;
-		int player_;
+		char opponent_;
+		char player_;
+		int searchBoardDiag(Board* board, int startRow, int startCol, int endRow, int endCol, int player);
 };
 
 
