@@ -39,6 +39,7 @@ bool ReflexAgent::gameWon(Board* board){
 			}
 		}
 	}
+	return won;
 }
 
 
