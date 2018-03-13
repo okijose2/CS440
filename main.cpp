@@ -1,6 +1,6 @@
-#include "board.cpp"
-#include "ReflexAgent.cpp"
-
+#include "board.h"
+#include "ReflexAgent.h"
+#include <vector>
 using namespace std;
 
 #define PLAYER_1 'a'
@@ -16,35 +16,33 @@ int main()
 {
 
 	Board* myBoard = new Board();
-	myBoard->initGame();
 	//myBoard.printBoard();
-	ReflexAgent player1 = ReflexAgent(PLAYER_1, RED_CHIP); //player1
-	ReflexAgent player2 = ReflexAgent(PLAYER_2, BLUE_CHIP); //player2
+	ReflexAgent player1 = ReflexAgent(PLAYER_1, PLAYER_2); //player1
+	ReflexAgent player2 = ReflexAgent(PLAYER_2, PLAYER_1); //player2
 
-	myBoard->updateState(1,1,PLAYER_1);
-	myBoard->updateState(5,5,PLAYER_2);
+	myBoard->play_piece(1,1,PLAYER_1);
+	myBoard->play_piece(5,5,PLAYER_2);
 
-	myBoard->printBoard();
 
 	myBoard->setPlayer(player1.getPlayer());
 
 	int count=0;
-	while(player1.playGame(myBoard) || player2.playGame(myBoard) || count==10)
+	char player = PLAYER_1;
+	bool hasWon = false;
+	while(!hasWon)
 	{
-		if(myBoard->currPlayer == player1.getPlayer()){
-			player1.playGame(myBoard);
-			myBoard->setPlayer(player2.getPlayer());
-			myBoard->printBoard();
-			count++;
+		if(player == player1.getPlayer()){
+			hasWon = player1.playGame(myBoard);
+			player = PLAYER_2;
 		}
-		else if(myBoard->currPlayer == player2.getPlayer()){
-			player2.playGame(myBoard);
-			myBoard->setPlayer(player1.getPlayer());
-			myBoard->printBoard();
-			count++;
+		else{
+			hasWon = player2.playGame(myBoard);
+			player = PLAYER_1;
 		}
+		myBoard->printBoard();
+		count++;
 	}
-	printf("%d\n", count);
+	//printf("%d\n", count);
 
 	//myBoard->printBoard();
 

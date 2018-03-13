@@ -80,10 +80,13 @@ void Board::printBoard()
 }
 
 /**
-  * returns if a location is occupied
+  * returns true if location is availible and valid
   */
 bool Board::unoccupied(int row, int col)
 {
+	if(row < 0 || col < 0 || row >= BOARD_SIZE || col >= BOARD_SIZE){
+		return false;
+	}
 	if(this->state[row][col] == '.'){
 		return true;
 	} else {
@@ -100,3 +103,5 @@ void Board::play_piece(int row, int col, char player){
 		p2_progress++;
 	}
 }
+
+

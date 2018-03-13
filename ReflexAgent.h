@@ -26,9 +26,10 @@ class ReflexAgent
 		bool oppFourInRow(Board* board); //true if opponent has 4 in a row, update board state internally
 		bool oppThreeInRow(Board* board); //true if opponent has three in a row, update board state internally
 		bool playGame(Board* board); //true if you wan win
-		vector<int> findWinningBlock(Board* board);
-		void placeStone(Board* board, vector<int> winningBlock);
+		int* findWinningBlock(Board* board);
+		void placeStone(Board* board, int* winningBlock);
 		char getPlayer();
+		bool gameWon(Board* board);
 
 
 	private:
