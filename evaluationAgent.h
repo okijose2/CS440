@@ -1,6 +1,9 @@
 #include "board.h"
 #include "stateNode.h"
 
+#define INFINITY 			1000000
+#define NEGATIVE_INFINITY  -1000000
+
 /**
   * Class representing both minimax and alpha-beta agents
   */

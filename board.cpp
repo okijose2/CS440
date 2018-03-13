@@ -104,4 +104,12 @@ void Board::play_piece(int row, int col, char player){
 	}
 }
 
+void Board::unplay_piece(int row, int col, char player){
+	this->state[row][col] = UNPLAYED;
+	if(player == PLAYER_1){
+		p1_progress--;
+	} else {
+		p2_progress--;
+	}
+}
 
