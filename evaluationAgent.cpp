@@ -11,10 +11,12 @@ EvaluationAgent::EvaluationAgent(char player_in, bool isAlphaBeta_in){
 }
 
 bool EvaluationAgent::playGame(Board* board){
+	//move_nodes = 0;
 	if(!isAlphaBeta){
 		StateNode* best = minimax(board);
 		printf("%d evaluated ", best->value);
 		printf("%d,  %d location\n", best->row, best->col);
+		printf("%d nodes expanded in this move\n", move_nodes);
 		board->play_piece(best->row, best->col, player);
 	}
 	return gameWon(board);
@@ -35,6 +37,7 @@ void EvaluationAgent::minimax_help(int depth, bool isMax, StateNode* curr) {
 	} else if (depth == 0){
 		curr->value = eval(curr->board);
 	} else {
+		move_nodes++;
 		for(int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++){
 				if (curr->board->unoccupied(i,j)){

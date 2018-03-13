@@ -24,4 +24,5 @@ private:
 	bool isAlphaBeta; // Is type minimax or alphabeta
 	char player; //so the agent knows which player it is DOES NOT CHANGE
 	char opponent; // Oponent's starting char DOES NOT CHANGE
+	int move_nodes;
 };
