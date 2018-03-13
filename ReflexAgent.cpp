@@ -627,21 +627,6 @@ int ReflexAgent::searchBoard(Board* board, int startRow, int startCol, int endRo
 		j += dCol;
 	}
 	return count;
-	/*
-	int count = 0;
-	if(endRow >= BOARD_SIZE || endCol >= BOARD_SIZE || endRow < 0 || endCol < 0){
-		return 0;
-	}
-	//if start row& endr word != diff for loop
-	for(int i=startRow; i<=endRow; i++){
-		for(int j=startCol; j <=endCol; j++){
-			if(((isupper(board->boardState(i,j)) && isupper(player))) || ((islower(board->boardState(i,j)) && islower(player)))){
-				count += 1;
-			}
-		}
-	}
-	//printf("count = %d \n", count);
-	return count;*/
 }
 
 
