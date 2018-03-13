@@ -11,7 +11,7 @@ using namespace std;
   */
 class EvaluationAgent{
 public:
-	EvaluationAgent(bool isAlphaBeta_in, char player_in);
+	EvaluationAgent(char player_in, bool isAlphaBeta_in);
 	bool playGame(Board* board);
 	int searchBoard(); // same as reflex agent
 	int eval(Board* board); //evaluate function

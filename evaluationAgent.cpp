@@ -1,6 +1,6 @@
 #include "evaluationAgent.h"
 
-EvaluationAgent::EvaluationAgent(bool isAlphaBeta_in, char player_in){
+EvaluationAgent::EvaluationAgent(char player_in, bool isAlphaBeta_in){
 	this->isAlphaBeta = isAlphaBeta_in;
 	this->player = player_in;
 	if(player_in == PLAYER_1){
