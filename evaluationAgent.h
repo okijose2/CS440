@@ -1,8 +1,7 @@
 #include "board.h"
 #include "stateNode.h"
-#include "<stdlib.h>"
 
-using namspace std;
+using namespace std;
 
 #define INFINITY 			1000000
 #define NEGATIVE_INFINITY  -1000000
@@ -26,4 +25,4 @@ private:
 	char player; //so the agent knows which player it is DOES NOT CHANGE
 	char player_progress; // does change
 	char opponent; // Oponent's starting char DOES NOT CHANGE
-}
+};

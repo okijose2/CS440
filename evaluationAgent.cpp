@@ -14,15 +14,21 @@ bool EvaluationAgent::playGame(Board* board){
 		StateNode* best = minimax(board);
 		board->play_piece(best->row, best->col, self->player);
 	}
+	return gameWon(board);
 }
 
 /**
   * If isMax, returns child node with max value
   * If !isMax, returns child node with min value
   */
-void EvaluationAgent::minimax_help(int depth, bool isMax, StateNode* curr){
-	StateNode* extreme = NULL; //max if max layer, min if min layer
-	if (depth == 0){
+void EvaluationAgent::minimax_help(int depth, bool isMax, StateNode* curr) {
+	if(gameWon(curr->board)){
+		if(isMax){
+			curr->value = NEGATIVE_INFINITY;
+		} else {
+			curr->value = INFINITY;
+		}
+	} else if (depth == 0){
 		curr->value = eval(curr->board);
 		return;
 	} else {
@@ -37,52 +43,37 @@ void EvaluationAgent::minimax_help(int depth, bool isMax, StateNode* curr){
 						currPlayer = this->opponent; 
 					} 
 					curr->board->play_piece(i, j, currPlayer);
-					if(gameWon(curr->board)){
-						if(isMax){
-							return INFINITY;
-						} else {
-							return NEGATIVE_INFINITY;
-						}
-					}
-					StateNode* child = new StateNode(!isMax, curr->board, i, j)
+					StateNode* child = new StateNode(!isMax, curr->board)
 					// Recursive call
 					minimax_help(depth-1, !isMax, child);
 					// Undoes move as to prevent confusion
 					curr->board->unplay_piece(i, j, currPlayer);
-					if(extreme == NULL) {
-						extreme = child;
+					if(isMax){
+						if(child->value > curr->value){
+							curr->value = child->value;
+							curr->row = i;
+							curr->col = j;
+						}
 					} else {
-						if(isMax){
-							if(child->value > extreme->value){
-								delete extreme;
-								extreme = child;
-							} else {
-								delete child;
-							}
-						} else {
-							if(child->value < extreme->value){
-								delete extreme;
-								extreme = child;
-							} else {
-								delete child;
-							}
+						if(child->value < curr->value){
+							curr->value = child->value;
+							curr->row = i;
+							curr->col = j;
 						}
 					}
+					delete child;
 				}
 			}
 		}
-		delete extreme;
 	}
 }
 
 StateNode* EvaluationAgent::minimax(Board* board){
 	StateNode* head = new StateNode(true, board,-1, -1);
-	StateNode* child = minimax_help(2, true, head);
-	delete head;
-	return child;
+	return head;
 }
 
-
+/**
 StateNode* EvaluationAgent::alphabeta_helper(int depth, bool isMax, StateNode* curr, int alpha, int beta){
 	StateNode* extreme = NULL; //max if max layer, min if min layer
 	if (depth == 0){
@@ -147,24 +138,36 @@ StateNode* EvaluationAgent::alphabeta(Board* board) {
 	StateNode* child = minimax_help(2, true, head);
 	delete head;
 	return child;
-}
+}**/
 
 int EvaluationAgent::eval(Board* board){
-	int self[6];
-	int opponent[6];
+	int selfs[5]
+	int opponents[5];
 	for(int i = 0; i < BOARD_SIZE; i++){
 		for(int j = 0; j < BOARD_SIZE; j++){
-			self[searchBoard(board,i,j,i+5,j,player)]++;
-			self[searchBoard(board,i,j,i,j+5,player)]++;
-			self[searchBoard(board,i,j,i+5,j+5,player)]++;
-			self[searchBoard(board,i,j,i+5,j-5,player)]++;
+			selfs[searchBoard(board,i,j,i+4,j,player)]++;
+			selfs[searchBoard(board,i,j,i,j+4,player)]++;
+			selfs[searchBoard(board,i,j,i+4,j+4,player)]++;
+			selfs[searchBoard(board,i,j,i+4,j-4,player)]++;
 
-			self[searchBoard(board,i,j,i+5,j,player)]++;
-			self[searchBoard(board,i,j,i,j+5,player)]++;
-			self[searchBoard(board,i,j,i+5,j+5,player)]++;
-			self[searchBoard(board,i,j,i+5,j-5,player)]++;
+			opponents[searchBoard(board,i,j,i+4,j,opponent)]++;
+			opponents[searchBoard(board,i,j,i,j+4,opponent)]++;
+			opponents[searchBoard(board,i,j,i+4,j+4,opponent)]++;
+			opponents[searchBoard(board,i,j,i+4,j-4,opponent)]++;
 		}
 	}
+	if(selfs[4] > 0){
+		return INFINITY;
+	}
+	if(opponents[4] > 0){
+		return NEGATIVE_INFINITY;
+	}
+	int sum = 0;
+	for (int i = 1; i < 5; i++){
+		sum += selfs[i]*i*i*i;
+		sum -= opponents[i]*i*i*i;
+	}
+	return sum;
 }
 
 bool EvaluationAgent::gameWon(Board* board)
@@ -187,6 +190,7 @@ bool EvaluationAgent::gameWon(Board* board)
 		}
 	}
 }
+
 
 int EvaluationAgent::searchBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player_in)
 {
@@ -222,7 +226,10 @@ int EvaluationAgent::searchBoard(Board* board, int startRow, int startCol, int e
 	int j = startCol;
 	for(int k=0; k <= dist; k++){
 		if(((isupper(board->boardState(i,j)) && isupper(player_in))) || ((islower(board->boardState(i,j)) && islower(player_in)))){
-				count += 1;
+			count += 1;
+		}
+		if(((isupper(board->boardState(i,j)) && islower(player_in))) || ((islower(board->boardState(i,j)) && isupper(player_in)))){
+			return 0;
 		}
 		i += dRow;
 		j += dCol;

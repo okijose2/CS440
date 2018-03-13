@@ -1,5 +1,6 @@
 #include "board.h"
 #include "ReflexAgent.h"
+#include "evaluationAgent.h"
 #include <vector>
 using namespace std;
 
@@ -16,9 +17,8 @@ int main()
 {
 
 	Board* myBoard = new Board();
-	//myBoard.printBoard();
 	ReflexAgent player1 = ReflexAgent(PLAYER_1, PLAYER_2); //player1
-	ReflexAgent player2 = ReflexAgent(PLAYER_2, PLAYER_1); //player2
+	EvaluationAgent player2 = EvaluationAgent(PLAYER_2, PLAYER_1); //player2
 
 	myBoard->play_piece(1,1,PLAYER_1);
 	myBoard->play_piece(5,5,PLAYER_2);

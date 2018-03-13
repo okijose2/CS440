@@ -22,7 +22,6 @@ ReflexAgent::ReflexAgent(char player, char opponent){
 }
 
 bool ReflexAgent::gameWon(Board* board){
-	bool won = false;
 	for(int i = 0; i < BOARD_SIZE; i++){
 		for(int j = 0; j < BOARD_SIZE; j++){
 			if(searchBoard(board, i, j, i+4,j, this->player_) == 5){
@@ -39,6 +38,7 @@ bool ReflexAgent::gameWon(Board* board){
 			}
 		}
 	}
+	return false;
 }
 
 
