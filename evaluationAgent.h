@@ -1,3 +1,4 @@
+
 #include "board.h"
 #include "stateNode.h"
 
@@ -19,6 +20,8 @@ public:
 	void minimax_help(int depth, bool isMax, StateNode* curr); // recursive helper for minimax
 	bool gameWon(Board* board);
 	int searchBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player);
+	void alphabeta_helper(int depth, bool isMax, StateNode* curr, int alpha, int beta);
+	StateNode* alphabeta(Board* board);
 
 private:
 	bool isAlphaBeta; // Is type minimax or alphabeta

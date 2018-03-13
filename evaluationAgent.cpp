@@ -14,9 +14,16 @@ bool EvaluationAgent::playGame(Board* board){
 	//move_nodes = 0;
 	if(!isAlphaBeta){
 		StateNode* best = minimax(board);
-		printf("%d evaluated ", best->value);
-		printf("%d,  %d location\n", best->row, best->col);
-		printf("%d nodes expanded in this move\n", move_nodes);
+		printf("Minimax value: %d, ", best->value);
+		printf("Minimax location: %d, %d\n", best->row, best->col);
+		printf("Minimax %d nodes expanded in this move\n", move_nodes);
+		board->play_piece(best->row, best->col, player);
+	}
+	else{
+		StateNode* best = alphabeta(board);
+		printf("A-B value: %d, ", best->value);
+		printf("A-B location: %d, %d\n", best->row, best->col);
+		printf("A-B %d nodes expanded in this move\n", move_nodes);
 		board->play_piece(best->row, best->col, player);
 	}
 	return gameWon(board);
@@ -83,16 +90,24 @@ StateNode* EvaluationAgent::minimax(Board* board){
 	return head;
 }
 
-/**
-StateNode* EvaluationAgent::alphabeta_helper(int depth, bool isMax, StateNode* curr, int alpha, int beta){
-	StateNode* extreme = NULL; //max if max layer, min if min layer
-	if (depth == 0){
+
+void EvaluationAgent::alphabeta_helper(int depth, bool isMax, StateNode* curr, int alpha, int beta) {
+	if(gameWon(curr->board)){
+		if(isMax){
+			curr->value = -1*INFINITY;
+			printf("bomb ");
+		} else {
+			curr->value = INFINITY;
+		}
+	} else if (depth == 0){
+		//printf("tubular 4\n");
 		curr->value = eval(curr->board);
-		return curr;
 	} else {
+		//printf("dope 5\n");
+		move_nodes++;
 		for(int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++){
-				if (this->board->unoccupied(i,j)){
+				if (curr->board->unoccupied(i,j)){
 					// changes board to test
 					char currPlayer;
 					if(isMax){
@@ -101,54 +116,64 @@ StateNode* EvaluationAgent::alphabeta_helper(int depth, bool isMax, StateNode* c
 						currPlayer = this->opponent; 
 					} 
 					curr->board->play_piece(i, j, currPlayer);
-					StateNode* child = new StateNode(!isMax, curr->board, i, j)
+					StateNode* child = new StateNode(!isMax, curr->board);
 					// Recursive call
-					minimax_help(depth-1, !isMax, child);
+					//printf("cool 1\n");
+					alphabeta_helper(depth-1, !isMax, child, alpha, beta);
 					// Undoes move as to prevent confusion
 					curr->board->unplay_piece(i, j, currPlayer);
-					if(extreme == NULL) {
-						extreme = child;
-						if(isMax){
-							alpha = child->value;
-						} else {
-							beta = child->value;
+					if(isMax){
+						//printf("nice 2\n");
+						int best = -1*INFINITY;
+						
+						if(child->value > curr->value){
+							//printf("sweet\n");
+							curr->value = child->value;
+							curr->row = i;
+							curr->col = j;
+							if(curr->value > best){
+								best = curr->value;
+							}
+							if(alpha < best){
+								alpha = best;
+							}
+							if(beta <= alpha){
+								break;
+							}
 						}
 					} else {
-						if(isMax){
-							if(child->value > extreme->value){
-								delete extreme;
-								extreme = child;
-								if(beta <= alpha){
-									return extreme;
-								}
-							} else {
-								delete child;
+						//printf("gnarly 3\n");
+						int best = INFINITY;
+		
+						if(child->value < curr->value){
+							//printf("spicy\n");
+							curr->value = child->value;
+							curr->row = i;
+							curr->col = j;
+							if(child->value < best){
+								best = child->value;
 							}
-						} else {
-							if(child->value < extreme->value){
-								delete extreme;
-								extreme = child;
-								if(beta <= alpha){
-									return extreme;
-								}
-							} else {
-								delete child;
+							if(beta > best){
+								beta = best;
+							}
+							if(beta <= alpha){
+								break;
 							}
 						}
 					}
+					delete child;
 				}
 			}
 		}
 	}
+	//printf("depth %d, value %d\n", depth, curr->value );
 }
 
-
 StateNode* EvaluationAgent::alphabeta(Board* board) {
-	StateNode* head = new StateNode(true, board,-1, -1);
-	StateNode* child = minimax_help(2, true, head);
-	delete head;
-	return child;
-}**/
+	StateNode* head = new StateNode(true, board);
+	alphabeta_helper(3, true, head, -1*INFINITY, INFINITY);
+	return head;
+}
 
 int EvaluationAgent::eval(Board* board){
 	int internal [5]= {0,0,0,0,0};
