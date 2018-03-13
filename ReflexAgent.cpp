@@ -101,6 +101,7 @@ bool ReflexAgent::winningMove(Board* board)
 			}
 		}
 	}
+	//printf("x %d", canWin);
 	return canWin;
 }
 
@@ -292,7 +293,8 @@ bool ReflexAgent::playGame(Board* board)
 	}
 	
 	else{
-		findWinningBlock(board);
+		vector<int> winningBlock = findWinningBlock(board);
+		placeStone(board, winningBlock);
 		printf("found potential winning block\n");
 		gameOver = false;
 	}
@@ -342,7 +344,7 @@ vector<int> ReflexAgent::findWinningBlock(Board* board)
 					block = winningBlock;				
 				}
 			}
-			else if(searchBoard(board, i, j, i, j-4, this->opponent_) == 0){
+			if(searchBoard(board, i, j, i, j-4, this->opponent_) == 0){
 				int curScore = searchBoard(board, i, j, i, j-4, this->player_);
 				if(curScore > maxScore){
 					maxScore = curScore;
@@ -351,7 +353,48 @@ vector<int> ReflexAgent::findWinningBlock(Board* board)
 					block = winningBlock;			
 				}
 			}
+			/*
+			if(searchBoard(board, i, j, i+4, j+4, this->opponent_) == 0){
+				int curScore = searchBoardDiag(board, i, j, i+4, j+4, this->player_);
+				if(curScore > maxScore){
+					maxScore = curScore;
+					int arr[] = {i, j, i+4, j-4};
+					vector<int> winningBlock(arr, arr+4);
+					block = winningBlock;			
+				}	
+			}
+			if(searchBoard(board, i, j, i-4, j-4, this->opponent_)==0){
+				int curScore = searchBoardDiag(board, i, j, i-4, j-4, this->player_);
+				if(curScore > maxScore){
+					maxScore = curScore;
+					int arr[] = {i,j,i-4,j-4};
+					vector<int> winningBlock(arr, arr+4);
+					block = winningBlock;
+				}
+			}
+			if(searchBoard(board, i, j, i+4, j-4, this->opponent_) == 0){
+				int curScore = searchBoardDiag(board, i, j, i+4, j-4, this->player_);
+				if(curScore > maxScore){
+					maxScore = curScore;
+					int arr[] = {i, j, i+4, j-4};
+					vector<int> winningBlock(arr, arr+4);
+					block = winningBlock;			
+				}	
+			}
+			if(searchBoard(board, i, j, i-4, j+4, this->opponent_)==0){
+				int curScore = searchBoardDiag(board, i, j, i-4, j+4, this->player_);
+				if(curScore> maxScore){
+					maxScore = curScore;
+					int arr[] = {i,j,i-4,j+4};
+					vector<int> winningBlock(arr, arr+4);
+					block = winningBlock;
+				}
+			}
+			*/		
 		}
+	}
+	for(unsigned i=0; i<block.size(); i++){
+		printf("%d,", block[i]);
 	}
 	return block;
 }
@@ -362,13 +405,23 @@ vector<int> ReflexAgent::findWinningBlock(Board* board)
 void ReflexAgent::placeStone(Board* board, vector<int> winningBlock)
 {
 
+
 	int startRow = winningBlock[0]; int startCol = winningBlock[1];
 	int endRow = winningBlock[2]; int endCol = winningBlock[3];
-
-	for(int i=startRow; i<endRow; i++){
-		for(int j=startCol; j<endCol; j++){
-			if(board->unoccupied(i, j)){
-				board->play_piece(i, j, this->player_);
+/*
+	int i = startRow; int j = startCol;
+	if(startRow > endRow){
+		i = endRow;
+	}
+	if(startCol > endCol){
+		j = endCol;
+	}
+*/
+	for(int x=startRow; x<=endRow; x++){
+		for(int y=startCol; y<=endCol; y++){
+			if(board->unoccupied(x, y)){
+				board->play_piece(x,y,this->player_);
+				break;
 			}
 		}
 	}
@@ -389,7 +442,7 @@ int ReflexAgent::searchBoard(Board* board, int startRow, int startCol, int endRo
 	//if start row& endr word != diff for loop
 	for(int i=startRow; i<=endRow; i++){
 		for(int j=startCol; j <=endCol; j++){
-			if((isupper(board->boardState(i,j)) && isupper(player)) || (islower(board->boardState(i,j)) && islower(player))){
+			if(((isupper(board->boardState(i,j)) && isupper(player))) || ((islower(board->boardState(i,j)) && islower(player)))){
 				count += 1;
 			}
 		}

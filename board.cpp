@@ -91,7 +91,7 @@ bool Board::unoccupied(int row, int col)
 	}
 }
 
-void Board::playPiece(int row, int col, char player){
+void Board::play_piece(int row, int col, char player){
 	if(player == PLAYER_1){
 		this->state[row][col] = p1_progress;
 		p1_progress++;
@@ -100,4 +100,3 @@ void Board::playPiece(int row, int col, char player){
 		p2_progress++;
 	}
 }
-
