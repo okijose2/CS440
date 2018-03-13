@@ -1,9 +1,17 @@
 #include "stateNode.h"
 
-StateNode::StateNode(bool isMax_in, Board* state_in, int row_in, int col_in){
+StateNode::StateNode(bool isMax_in, Board* state_in){
 	this->isMax = isMax_in;
-	this->state = state_in;
-	this->row = row_in;
-	this->col = col_in;
-	this->value = 0;
+	this->board = state_in;
+	this->row = -1;
+	this->col = -1;
+	if(isMax){
+		this->value = NEGATIVE_INFINITY;
+	} else {
+		this->value = INFINITY;
+	}
+}
+
+StateNode::~StateNode(){
+	
 }

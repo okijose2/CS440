@@ -22,6 +22,7 @@ ReflexAgent::ReflexAgent(char player, char opponent){
 }
 
 bool ReflexAgent::gameWon(Board* board){
+	bool won = false;
 	for(int i = 0; i < BOARD_SIZE; i++){
 		for(int j = 0; j < BOARD_SIZE; j++){
 			if(searchBoard(board, i, j, i+4,j, this->player_) == 5){
@@ -38,7 +39,7 @@ bool ReflexAgent::gameWon(Board* board){
 			}
 		}
 	}
-	return false;
+	return won;
 }
 
 
@@ -360,12 +361,7 @@ bool ReflexAgent::playGame(Board* board)
 	}
 	
 	else{
-		printf("On winner\n");
 		int* winningBlock = findWinningBlock(board);
-		printf("found winner\n");
-		for(int i = 0; i < 4; i++){
-			printf("%d\n",winningBlock[i]);
-		}
 		placeStone(board, winningBlock);
 		delete winningBlock;
 		printf("found potential winning block\n");
