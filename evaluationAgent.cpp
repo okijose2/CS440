@@ -37,7 +37,6 @@ void EvaluationAgent::minimax_help(int depth, bool isMax, StateNode* curr) {
 	if(gameWon(curr->board)){
 		if(isMax){
 			curr->value = -1*INFINITY;
-			printf("bomb ");
 		} else {
 			curr->value = INFINITY;
 		}
@@ -95,7 +94,6 @@ void EvaluationAgent::alphabeta_helper(int depth, bool isMax, StateNode* curr, i
 	if(gameWon(curr->board)){
 		if(isMax){
 			curr->value = -1*INFINITY;
-			printf("bomb ");
 		} else {
 			curr->value = INFINITY;
 		}
@@ -118,16 +116,13 @@ void EvaluationAgent::alphabeta_helper(int depth, bool isMax, StateNode* curr, i
 					curr->board->play_piece(i, j, currPlayer);
 					StateNode* child = new StateNode(!isMax, curr->board);
 					// Recursive call
-					//printf("cool 1\n");
 					alphabeta_helper(depth-1, !isMax, child, alpha, beta);
 					// Undoes move as to prevent confusion
 					curr->board->unplay_piece(i, j, currPlayer);
 					if(isMax){
-						//printf("nice 2\n");
 						int best = -1*INFINITY;
 						
 						if(child->value > curr->value){
-							//printf("sweet\n");
 							curr->value = child->value;
 							curr->row = i;
 							curr->col = j;
@@ -142,11 +137,9 @@ void EvaluationAgent::alphabeta_helper(int depth, bool isMax, StateNode* curr, i
 							}
 						}
 					} else {
-						//printf("gnarly 3\n");
 						int best = INFINITY;
 		
 						if(child->value < curr->value){
-							//printf("spicy\n");
 							curr->value = child->value;
 							curr->row = i;
 							curr->col = j;
@@ -180,15 +173,15 @@ int EvaluationAgent::eval(Board* board){
 	int opponents [5]= {0,0,0,0,0};
 	for(int i = 0; i < BOARD_SIZE; i++){
 		for(int j = 0; j < BOARD_SIZE; j++){
-			internal[searchBoard(board,i,j,i+4,j,player)]++;
-			internal[searchBoard(board,i,j,i,j+4,player)]++;
-			internal[searchBoard(board,i,j,i+4,j+4,player)]++;
-			internal[searchBoard(board,i,j,i+4,j-4,player)]++;
+			internal[scanBoard(board,i,j,i+4,j,player)]++;
+			internal[scanBoard(board,i,j,i,j+4,player)]++;
+			internal[scanBoard(board,i,j,i+4,j+4,player)]++;
+			internal[scanBoard(board,i,j,i+4,j-4,player)]++;
 
-			opponents[searchBoard(board,i,j,i+4,j,opponent)]++;
-			opponents[searchBoard(board,i,j,i,j+4,opponent)]++;
-			opponents[searchBoard(board,i,j,i+4,j+4,opponent)]++;
-			opponents[searchBoard(board,i,j,i+4,j-4,opponent)]++;
+			opponents[scanBoard(board,i,j,i+4,j,opponent)]++;
+			opponents[scanBoard(board,i,j,i,j+4,opponent)]++;
+			opponents[scanBoard(board,i,j,i+4,j+4,opponent)]++;
+			opponents[scanBoard(board,i,j,i+4,j-4,opponent)]++;
 		}
 	}
 	int sum = 0;
@@ -205,16 +198,16 @@ bool EvaluationAgent::gameWon(Board* board)
 	bool won = false;
 	for(int i = 0; i < BOARD_SIZE; i++){
 		for(int j = 0; j < BOARD_SIZE; j++){
-			if(searchBoard(board, i, j, i+4,j, this->player) == 5){
+			if(scanBoard(board, i, j, i+4,j, this->player) == 5){
 				return true;
 			}
-			if(searchBoard(board, i, j, i,j+4, this->player) == 5){
+			if(scanBoard(board, i, j, i,j+4, this->player) == 5){
 				return true;
 			}
-			if(searchBoard(board, i, j, i+4,j+4, this->player) == 5){
+			if(scanBoard(board, i, j, i+4,j+4, this->player) == 5){
 				return true;
 			}
-			if(searchBoard(board, i, j, i+4,j-4, this->player) == 5){
+			if(scanBoard(board, i, j, i+4,j-4, this->player) == 5){
 				return true;
 			}
 		}
@@ -223,22 +216,8 @@ bool EvaluationAgent::gameWon(Board* board)
 }
 
 
-int EvaluationAgent::searchBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player_in)
+int EvaluationAgent::scanBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player_in)
 {
-
-	/**if(endRow >= BOARD_SIZE){
-		endRow = BOARD_SIZE - 1;
-	}
-	if(endCol >= BOARD_SIZE){
-		endCol = BOARD_SIZE - 1;
-	}
-	if(endCol < 0){
-		endCol = 0;
-	}
-	if(endRow < 0){
-		endRow = 0;
-	}**/
-
 	if(endRow >= BOARD_SIZE || endCol >= BOARD_SIZE || endRow < 0 || endCol < 0){
 		return 0;
 	}

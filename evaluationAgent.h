@@ -19,7 +19,7 @@ public:
 	StateNode* minimax(Board* board); // returns the StateNode containing the move for optimal play
 	void minimax_help(int depth, bool isMax, StateNode* curr); // recursive helper for minimax
 	bool gameWon(Board* board);
-	int searchBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player);
+	int scanBoard(Board* board, int startRow, int startCol, int endRow, int endCol, char player);
 	void alphabeta_helper(int depth, bool isMax, StateNode* curr, int alpha, int beta);
 	StateNode* alphabeta(Board* board);
 
